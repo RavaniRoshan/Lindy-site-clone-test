@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, User, LogOut, ChevronDown } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { LoginModal } from './modals/LoginModal';
+import { RegisterModal } from './modals/RegisterModal';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,12 +22,42 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showUserDropdown) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.user-dropdown')) {
+          setShowUserDropdown(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showUserDropdown]);
+
   const navItems = [
     { name: 'Product', href: '#product' },
     { name: 'Features', href: '#features' },
     { name: 'Pricing', href: '#pricing' },
     { name: 'Company', href: '#company' },
   ];
+
+  const handleLoginClick = () => {
+    setShowLoginModal(true);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleRegisterClick = () => {
+    setShowRegisterModal(true);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setShowUserDropdown(false);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -55,12 +93,52 @@ const Navigation = () => {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center space-x-4">
-            <button className="text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium">
-              Sign In
-            </button>
-            <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-200">
-              Get Started
-            </button>
+            {isLoading ? (
+              <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
+            ) : isAuthenticated ? (
+              <div className="relative user-dropdown">
+                <button
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium"
+                >
+                  <User size={20} />
+                  <span>{user?.name}</span>
+                  <ChevronDown size={16} className={`transform transition-transform duration-200 ${showUserDropdown ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* User Dropdown */}
+                {showUserDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="px-4 py-2 border-b border-gray-200">
+                      <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                    >
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={handleLoginClick}
+                  className="text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={handleRegisterClick}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-200"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,17 +165,62 @@ const Navigation = () => {
                 </a>
               ))}
               <div className="pt-4 border-t border-gray-200/50 space-y-3">
-                <button className="block w-full text-left text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium">
-                  Sign In
-                </button>
-                <button className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-center">
-                  Get Started
-                </button>
+                {isLoading ? (
+                  <div className="w-full h-8 bg-gray-200 animate-pulse rounded"></div>
+                ) : isAuthenticated ? (
+                  <>
+                    <div className="px-2 py-2 bg-gray-50 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium flex items-center space-x-2"
+                    >
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleLoginClick}
+                      className="block w-full text-left text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium"
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={handleRegisterClick}
+                      className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-center"
+                    >
+                      Get Started
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* Authentication Modals */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSwitchToRegister={() => {
+          setShowLoginModal(false);
+          setShowRegisterModal(true);
+        }}
+      />
+
+      <RegisterModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSwitchToLogin={() => {
+          setShowRegisterModal(false);
+          setShowLoginModal(true);
+        }}
+      />
     </nav>
   );
 };

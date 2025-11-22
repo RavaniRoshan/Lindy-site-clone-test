@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -12,21 +14,25 @@ import AnimatedBackground from './components/AnimatedBackground';
 
 function App() {
   return (
-    <div className="min-h-screen relative">
-      {/* Global Effects */}
-      <ScrollProgress />
-      <MouseFollower />
-      <FloatingElements />
-      <AnimatedBackground />
-      
-      {/* Main Content */}
-      <Navigation />
-      <Hero />
-      <InteractiveStats />
-      <Features />
-      <Testimonials />
-      <Footer />
-    </div>
+    <Router>
+      <AuthProvider>
+        <div className="min-h-screen relative">
+          {/* Global Effects */}
+          <ScrollProgress />
+          <MouseFollower />
+          <FloatingElements />
+          <AnimatedBackground />
+
+          {/* Main Content */}
+          <Navigation />
+          <Hero />
+          <InteractiveStats />
+          <Features />
+          <Testimonials />
+          <Footer />
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
 
