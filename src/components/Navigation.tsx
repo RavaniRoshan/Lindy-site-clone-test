@@ -22,6 +22,20 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showUserDropdown) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.user-dropdown')) {
+          setShowUserDropdown(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showUserDropdown]);
+
   const navItems = [
     { name: 'Product', href: '#product' },
     { name: 'Features', href: '#features' },
