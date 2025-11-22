@@ -2,6 +2,8 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
+import { authRoutes } from './auth.routes';
+import { authenticate } from './auth.middleware';
 
 const server = Fastify({
   logger: true,
@@ -21,6 +23,9 @@ server.register(rateLimit, {
   max: 100,
   timeWindow: '1 minute',
 });
+
+// Add authentication decorator
+server.decorate('authenticate', authenticate);
 
 // Health check endpoint
 server.get('/health', async () => {
