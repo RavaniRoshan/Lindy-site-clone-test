@@ -29,6 +29,22 @@ const Navigation = () => {
     { name: 'Company', href: '#company' },
   ];
 
+  const handleLoginClick = () => {
+    setShowLoginModal(true);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleRegisterClick = () => {
+    setShowRegisterModal(true);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setShowUserDropdown(false);
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
