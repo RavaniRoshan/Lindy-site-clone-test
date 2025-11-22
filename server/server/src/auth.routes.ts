@@ -3,8 +3,14 @@ import { authService } from './auth.service';
 import { registerSchema, loginSchema, refreshTokenSchema } from './schemas';
 
 export async function authRoutes(fastify: FastifyInstance) {
-  // Register endpoint
+  // Register endpoint with specific rate limiting (3 attempts per hour)
   fastify.post('/api/auth/register', {
+    config: {
+      rateLimit: {
+        max: 3,
+        timeWindow: '1 hour',
+      },
+    },
     schema: {
       body: registerSchema,
     },
