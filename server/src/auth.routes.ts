@@ -1,8 +1,17 @@
 import { FastifyInstance } from 'fastify';
 import { authService } from './auth.service';
 import { registerSchema, loginSchema, refreshTokenSchema } from './schemas';
+import { authenticate } from './auth.middleware';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    authenticate(request: any, reply: any): Promise<void>;
+  }
+}
 
 export async function authRoutes(fastify: FastifyInstance) {
+  // Register authenticate function
+  fastify.decorate('authenticate', authenticate);
   // Register endpoint with specific rate limiting (3 attempts per hour)
   fastify.post('/api/auth/register', {
     config: {
