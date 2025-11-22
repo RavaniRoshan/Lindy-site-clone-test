@@ -32,6 +32,9 @@ server.get('/health', async () => {
   return { status: 'ok', timestamp: new Date().toISOString() };
 });
 
+// Register authentication routes
+server.register(authRoutes);
+
 // Start server
 const start = async () => {
   try {
