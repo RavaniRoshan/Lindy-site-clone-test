@@ -32,8 +32,14 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Login endpoint
+  // Login endpoint with specific rate limiting (5 attempts per 15 minutes)
   fastify.post('/api/auth/login', {
+    config: {
+      rateLimit: {
+        max: 5,
+        timeWindow: '15 minutes',
+      },
+    },
     schema: {
       body: loginSchema,
     },
