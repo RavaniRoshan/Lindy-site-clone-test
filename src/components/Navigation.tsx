@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, User, LogOut, ChevronDown } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { LoginModal } from './modals/LoginModal';
+import { RegisterModal } from './modals/RegisterModal';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
