@@ -151,12 +151,38 @@ const Navigation = () => {
                 </a>
               ))}
               <div className="pt-4 border-t border-gray-200/50 space-y-3">
-                <button className="block w-full text-left text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium">
-                  Sign In
-                </button>
-                <button className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-center">
-                  Get Started
-                </button>
+                {isLoading ? (
+                  <div className="w-full h-8 bg-gray-200 animate-pulse rounded"></div>
+                ) : isAuthenticated ? (
+                  <>
+                    <div className="px-2 py-2 bg-gray-50 rounded-lg">
+                      <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium flex items-center space-x-2"
+                    >
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleLoginClick}
+                      className="block w-full text-left text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium"
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={handleRegisterClick}
+                      className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-center"
+                    >
+                      Get Started
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
