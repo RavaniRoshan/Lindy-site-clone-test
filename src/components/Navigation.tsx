@@ -96,7 +96,7 @@ const Navigation = () => {
             {isLoading ? (
               <div className="w-20 h-8 bg-gray-200 animate-pulse rounded"></div>
             ) : isAuthenticated ? (
-              <div className="relative">
+              <div className="relative user-dropdown">
                 <button
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
                   className="flex items-center space-x-2 text-gray-700 hover:text-purple-600 transition-colors duration-200 font-medium"
