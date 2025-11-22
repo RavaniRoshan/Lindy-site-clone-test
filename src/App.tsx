@@ -14,21 +14,25 @@ import AnimatedBackground from './components/AnimatedBackground';
 
 function App() {
   return (
-    <div className="min-h-screen relative">
-      {/* Global Effects */}
-      <ScrollProgress />
-      <MouseFollower />
-      <FloatingElements />
-      <AnimatedBackground />
-      
-      {/* Main Content */}
-      <Navigation />
-      <Hero />
-      <InteractiveStats />
-      <Features />
-      <Testimonials />
-      <Footer />
-    </div>
+    <Router>
+      <AuthProvider>
+        <div className="min-h-screen relative">
+          {/* Global Effects */}
+          <ScrollProgress />
+          <MouseFollower />
+          <FloatingElements />
+          <AnimatedBackground />
+
+          {/* Main Content */}
+          <Navigation />
+          <Hero />
+          <InteractiveStats />
+          <Features />
+          <Testimonials />
+          <Footer />
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
 
